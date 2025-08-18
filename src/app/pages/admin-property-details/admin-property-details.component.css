@@ -1,0 +1,165 @@
+.admin-property-details-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(30,41,59,0.13), 0 2px 8px rgba(30,41,59,0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+  overflow-x: hidden;
+}
+.admin-property-card {
+  text-align: center;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 16px rgba(30,41,59,0.08);
+  padding: 2rem 1.2rem 1.2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+.admin-property-header {
+  margin-bottom: 1.2rem;
+}
+.admin-property-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-top: 0.5rem;
+  word-break: break-word;
+}
+.admin-property-status {
+  margin-top: 0.5rem;
+}
+.admin-property-info-list {
+  text-align: left;
+  margin: 1.2rem auto 0 auto;
+  max-width: 420px;
+  font-size: 1.08rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 100%;
+}
+.admin-property-info-list div {
+  word-break: break-word;
+  white-space: pre-line;
+}
+.admin-property-info-list strong {
+  min-width: 120px;
+  display: inline-block;
+}
+.admin-property-info-list .property-description {
+  background: #f7f7fa;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #e5e7eb;
+  margin-top: 0.5rem;
+  font-size: 1.05rem;
+  color: #222;
+  word-break: break-word;
+  white-space: pre-line;
+  max-width: 100%;
+}
+.btn.btn-outline-primary {
+  margin-top: 1.5rem;
+  font-weight: 600;
+  border-radius: 0.7rem;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 41, 59, 0.55);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-modal {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 8px 32px rgba(30,41,59,0.18), 0 2px 8px rgba(30,41,59,0.10);
+  padding: 2.5rem 2.2rem 2rem 2.2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  text-align: center;
+  position: relative;
+  animation-duration: 0.25s;
+}
+.modal-icon {
+  font-size: 2.5rem;
+  color: #ff9800;
+  margin-bottom: 0.7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #222;
+  letter-spacing: 0.2px;
+}
+.modal-message {
+  font-size: 1.08rem;
+  color: #444;
+  margin-bottom: 1.3rem;
+  line-height: 1.6;
+}
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.custom-modal .btn-danger {
+  background: linear-gradient(90deg, #dc3545 0%, #ff7675 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.7rem;
+  padding: 0.6rem 1.6rem;
+  box-shadow: 0 2px 8px rgba(220,53,69,0.10);
+  transition: background 0.18s, box-shadow 0.18s;
+}
+.custom-modal .btn-danger:hover {
+  background: linear-gradient(90deg, #b71c1c 0%, #ff7675 100%);
+}
+.custom-modal .btn-secondary {
+  background: #f3f4f6;
+  color: #1e3a8a;
+  font-weight: 600;
+  border-radius: 0.7rem;
+  padding: 0.6rem 1.6rem;
+  border: none;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.07);
+  transition: background 0.18s, color 0.18s;
+}
+.custom-modal .btn-secondary:hover {
+  background: #e0e7ef;
+  color: #2563eb;
+}
+@media (max-width: 700px) {
+  .admin-property-details-container {
+    padding: 1.2rem 0.2rem 1rem 0.2rem;
+    max-width: 98vw;
+  }
+  .admin-property-card {
+    padding: 1.2rem 0.3rem 1rem 0.3rem;
+    max-width: 99vw;
+  }
+  .admin-property-info-list {
+    max-width: 99vw;
+  }
+}
+@media (max-width: 500px) {
+  .custom-modal {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+} 

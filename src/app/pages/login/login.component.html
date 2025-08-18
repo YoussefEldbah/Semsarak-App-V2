@@ -1,0 +1,98 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-logo">Semsarak</div>
+      <div class="brand-subtitle">Welcome back! Please sign in to your account</div>
+    </div>
+    
+    <div class="login-body">
+      <div *ngIf="successMessage" class="custom-alert custom-alert-success animate__animated animate__fadeInDown">
+        <span class="custom-alert-icon"><i class="fas fa-check-circle"></i></span>
+        <span class="custom-alert-text">{{ successMessage }}</span>
+        <span class="custom-alert-close" (click)="successMessage = ''">&times;</span>
+      </div>
+      <div *ngIf="errorMessage" class="custom-alert custom-alert-danger animate__animated animate__fadeInDown">
+        <span class="custom-alert-icon"><i class="fas fa-exclamation-circle"></i></span>
+        <span class="custom-alert-text">{{ errorMessage }}</span>
+        <span class="custom-alert-close" (click)="errorMessage = ''">&times;</span>
+      </div>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Enter your username"
+              formControlName="username"
+              [class.is-invalid]="isFieldInvalid('username')"
+            >
+            <i class="fas fa-user input-icon"></i>
+          </div>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
+            Please enter your username
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrapper">
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              class="form-control" 
+              placeholder="Enter your password"
+              formControlName="password"
+              [class.is-invalid]="isFieldInvalid('password')"
+            >
+            <i class="fas fa-lock input-icon"></i>
+            <button 
+              type="button" 
+              class="password-toggle"
+              (click)="togglePassword()"
+            >
+              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+            Please enter your password (at least 6 characters)
+          </div>
+        </div>
+        
+        <div class="form-group d-flex justify-content-between align-items-center">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe" formControlName="rememberMe">
+            <label class="form-check-label" for="rememberMe">
+              Remember me
+            </label>
+          </div>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || isLoading">
+          <span *ngIf="!isLoading">
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Sign In
+          </span>
+          <span *ngIf="isLoading">
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            Signing In...
+          </span>
+        </button>
+      </form>
+      
+      <div class="divider">
+        <span>or continue with</span>
+      </div>
+      
+      <button class="btn btn-google w-100">
+        <i class="fab fa-google me-2"></i>
+        Sign in with Google
+      </button>
+      
+      <div class="register-link">
+        <p>Don't have an account? <a routerLink="/register">Sign up here</a></p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="container py-4">
+  <h2 class="mb-4" style="font-weight: 700; color: #1e3a8a;"><i class="fas fa-calendar-check me-2"></i>My Bookings</h2>
+  
+  <!-- Payment Success Message -->
+  <div *ngIf="paymentSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{ paymentSuccess }}
+    <button type="button" class="btn-close" (click)="paymentSuccess = ''"></button>
+  </div>
+  
+  <!-- Payment Error Message -->
+  <div *ngIf="paymentError" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>{{ paymentError }}
+    <button type="button" class="btn-close" (click)="paymentError = ''"></button>
+  </div>
+  
+  <!-- Cancel Success Message -->
+  <div *ngIf="cancelSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{ cancelSuccess }}
+    <button type="button" class="btn-close" (click)="cancelSuccess = ''"></button>
+  </div>
+  
+  <!-- Cancel Error Message -->
+  <div *ngIf="cancelError" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>{{ cancelError }}
+    <button type="button" class="btn-close" (click)="cancelError = ''"></button>
+  </div>
+  <div *ngIf="bookings.length === 0" class="alert alert-info text-center py-4" style="font-size: 1.2rem;">
+    You have no bookings yet.
+  </div>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let booking of bookings">
+      <div class="card shadow booking-card border-0 rounded-4 h-100 position-relative">
+        <!-- شارة الحالة -->
+        <span class="booking-status-badge position-absolute top-0 end-0 m-3" [ngClass]="{
+          'pending': booking.status === 'Pending',
+          'confirmed': booking.status === 'Confirmed',
+          'cancelled': booking.status === 'Cancelled'
+        }">
+          <i class="fas fa-info-circle me-1"></i> {{ booking.status }}
+        </span>
+        <div *ngIf="booking.imageUrls && booking.imageUrls.length" class="booking-carousel-wrapper">
+          <div id="booking-carousel-{{booking.id}}" class="carousel slide booking-carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div *ngFor="let img of booking.imageUrls; let i = index" class="carousel-item" [class.active]="i === 0">
+                <img [src]="getImageUrl(img)" class="d-block w-100 booking-carousel-img" alt="Property Image">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#booking-carousel-' + booking.id" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#booking-carousel-' + booking.id" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+        <div class="card-body py-3">
+          <h5 class="card-title mb-3 booking-title">
+            <i class="fas fa-home me-2 text-primary"></i>{{ booking.propertyTitle }}
+          </h5>
+          <div class="booking-detail-row mb-2">
+            <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+            <span><strong>City:</strong> {{ booking.city }}</span>
+            <span class="mx-2">|</span>
+            <span><strong>Region:</strong> {{ booking.region }}</span>
+          </div>
+          <div class="booking-detail-row mb-2">
+            <i class="fas fa-door-open me-1 text-secondary"></i>
+            <span><strong>Rooms:</strong> {{ booking.roomsCount }}</span>
+          </div>
+          <div class="booking-detail-row mb-2">
+            <i class="fas fa-calendar-alt me-1 text-primary"></i>
+            <span><strong>From:</strong> {{ booking.startDate | date:'mediumDate' }}</span>
+            <span class="mx-2">→</span>
+            <span><strong>To:</strong> {{ booking.endDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="booking-detail-row mb-2">
+            <i class="fas fa-money-bill-wave me-1 text-success"></i>
+            <span><strong>Price:</strong> {{ booking.price | currency:'USD':'symbol':'1.0-0' }}</span>
+          </div>
+          <!-- زر إلغاء الحجز -->
+          <button *ngIf="canCancel(booking)" class="btn btn-outline-danger w-100 mt-3 booking-cancel-btn" (click)="cancelBooking(booking)" [disabled]="cancellingId === booking.id">
+            <span *ngIf="cancellingId !== booking.id"><i class="fas fa-times-circle me-1"></i> Cancel Booking</span>
+            <span *ngIf="cancellingId === booking.id"><i class="fas fa-spinner fa-spin me-1"></i> Cancelling...</span>
+          </button>
+          
+          <!-- زر تأكيد الحجز بالدفع -->
+          <button *ngIf="canPay(booking)" class="btn btn-success w-100 mt-2 booking-pay-btn" (click)="payForBooking(booking)" [disabled]="payingId === booking.id">
+            <span *ngIf="payingId !== booking.id"><i class="fas fa-credit-card me-1"></i> Confirm Booking & Pay</span>
+            <span *ngIf="payingId === booking.id"><i class="fas fa-spinner fa-spin me-1"></i> Processing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

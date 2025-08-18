@@ -1,0 +1,463 @@
+<!-- Enhanced Hero Section -->
+<section class="hero-section">
+  <div class="hero-background">
+    <div class="hero-overlay"></div>
+    <div class="hero-particles"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title animate-fade-in">
+        Find Your <span class="">Dream Home</span>
+      </h1>
+      <p class="hero-subtitle animate-fade-in-delay">
+        Discover the perfect property that matches your lifestyle and budget. 
+        Join thousands of satisfied customers who found their ideal home with us.
+      </p>
+      <div class="hero-buttons animate-fade-in-delay-2">
+        <a href="#properties" class="btn btn-primary btn-lg me-3">
+          <i class="fas fa-search me-2"></i>
+          Browse Properties
+        </a>
+        <a href="#contact" class="btn btn-outline-light btn-lg">
+          <i class="fas fa-phone me-2"></i>
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- Enhanced Search Section -->
+<section class="search-section">
+  <div class="container">
+    <div class="search-card">
+      <h3 class="search-title">
+        <i class="fas fa-search me-2"></i>
+        Find Your Perfect Property
+      </h3>
+      <form (ngSubmit)="searchProperties()" class="search-form">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-map-marker-alt me-1"></i>
+                Location
+              </label>
+              <input type="text" class="form-control" placeholder="Enter city..." [(ngModel)]="location" name="location" (input)="searchProperties()">
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-building me-1"></i>
+                Region
+              </label>
+              <input type="text" class="form-control" placeholder="Enter region..." [(ngModel)]="region" name="region" (input)="searchProperties()">
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-dollar-sign me-1"></i>
+                Price Range
+              </label>
+              <select class="form-control" [(ngModel)]="priceRange" name="priceRange" (change)="searchProperties()">
+                <option value="">Any Price</option>
+                <option>$100k - $200k</option>
+                <option>$200k - $500k</option>
+                <option>$500k - $1M</option>
+                <option>$1M+</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="form-group">
+              <label class="form-label">&nbsp;</label>
+              <button class="btn btn-primary w-100" type="submit">
+                <i class="fas fa-search me-2"></i>
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Properties Section -->
+<section class="section" id="properties">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">
+        {{ user && (user.role === 'Owner' || (user.roles && user.roles.includes('Owner'))) ? 'My Properties' : 'Featured Properties' }}
+      </h2>
+      <p class="section-subtitle">
+        Explore our handpicked selection of premium properties
+      </p>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4" *ngFor="let property of paginatedProperties">
+        <div class="property-card pro-card-modern">
+          <div class="property-image pro-image-modern">
+            <span class="property-price pro-badge-modern">${{ property.price }}</span>
+            <img [src]="getImageUrl(property.imagePaths?.[0])" alt="Property Image" class="pro-img-modern" />
+            <div class="property-overlay">
+              <a class="btn btn-light btn-sm" [routerLink]="['/property-details', property.id]">
+                <i class="fas fa-eye me-1"></i>
+                View Details
+              </a>
+            </div>
+          </div>
+          <div class="property-details pro-details-modern">
+            <h5 class="property-title pro-title-modern">{{ property.title }}</h5>
+            <div class="property-location pro-location-modern">
+              <i class="fas fa-map-marker-alt me-1"></i>
+              <span>{{ property.city }}, {{ property.region }}</span>
+            </div>
+            <div class="property-features">
+              <span class="feature-badge">
+                <i class="fas fa-door-open me-1"></i>
+                {{ property.roomsCount || 'غير محدد' }} غرفة
+              </span>
+              <span class="feature-badge">
+                <i class="fas fa-money-bill-wave me-1"></i>
+                {{ property.price | currency:'USD':'symbol':'1.0-0' }}
+              </span>
+            </div>
+            <a class="btn pro-btn-modern w-100" [routerLink]="['/property-details', property.id]">
+              View Details
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div *ngIf="totalPages > 1" class="pagination-container mt-4">
+      <nav aria-label="Properties pagination">
+        <ul class="pagination justify-content-center">
+          <!-- Previous Button -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="previousPage()" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <!-- Page Numbers -->
+          <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
+          </li>
+          
+          <!-- Next Button -->
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="javascript:void(0)" (click)="nextPage()" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Page Info -->
+      <div class="text-center mt-2">
+        <small class="text-muted">
+          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, properties.length) }} of {{ properties.length }} properties
+        </small>
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div *ngIf="properties.length === 0" class="text-center mt-4">
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        No properties found matching your search criteria.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-subtitle">Comprehensive real estate solutions tailored to your needs</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <h4>Property Listing</h4>
+          <p>List your property with professional photos and detailed descriptions to attract the right buyers.</p>
+          <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h4>Property Search</h4>
+          <p>Find your dream home with our advanced search filters and personalized recommendations.</p>
+          <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h4>Negotiation Support</h4>
+          <p>Get expert guidance throughout the negotiation process to secure the best deal.</p>
+          <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <h4>Legal Assistance</h4>
+          <p>Professional legal support for contracts, documentation, and property transfers.</p>
+          <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-calculator"></i>
+          </div>
+          <h4>Property Valuation</h4>
+          <p>Accurate property valuations based on market analysis and current trends.</p>
+          <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h4>24/7 Support</h4>
+          <p>Round-the-clock customer support to answer your questions and assist with any issues.</p>
+          <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="section bg-light" id="about">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h2 class="section-title text-start">Why Choose Semsarak?</h2>
+        <p class="section-subtitle text-start">
+          We're committed to making your property search seamless and successful
+        </p>
+        
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-content">
+              <h5>Trusted & Secure</h5>
+              <p>All properties are verified and secure for your peace of mind</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="feature-content">
+              <h5>24/7 Support</h5>
+              <p>Our team is available round the clock to assist you</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <div class="feature-content">
+              <h5>Expert Guidance</h5>
+              <p>Get professional advice from our experienced real estate experts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="about-image">
+          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+               alt="About Semsarak" class="img-fluid rounded">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">What Our Clients Say</h2>
+      <p class="section-subtitle">Real stories from satisfied customers</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>"Semsarak helped me find my dream home within my budget. The team was professional and made the entire process smooth."</p>
+          </div>
+          <div class="testimonial-author">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Ahmed Hassan" class="author-image">
+            <div class="author-info">
+              <h5>Ahmed Hassan</h5>
+              <span>Property Buyer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>"As a property owner, I'm impressed with how quickly Semsarak helped me sell my property. Great service and support!"</p>
+          </div>
+          <div class="testimonial-author">
+            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fatima Ali" class="author-image">
+            <div class="author-info">
+              <h5>Fatima Ali</h5>
+              <span>Property Owner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>"The payment system is so convenient and secure. I love how easy it is to book properties and make payments online."</p>
+          </div>
+          <div class="testimonial-author">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Omar Khalil" class="author-image">
+            <div class="author-info">
+              <h5>Omar Khalil</h5>
+              <span>Property Renter</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content text-center">
+      <h2>Ready to Find Your Dream Home?</h2>
+      <p>Join thousands of satisfied customers who found their perfect property with Semsarak</p>
+      <div class="cta-buttons">
+        <a href="#properties" class="btn btn-primary btn-lg me-3">
+          <i class="fas fa-search me-2"></i>
+          Browse Properties
+        </a>
+        <a href="#contact" class="btn btn-outline-light btn-lg">
+          <i class="fas fa-phone me-2"></i>
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Get In Touch</h2>
+      <p class="section-subtitle">
+        Ready to find your dream home? Contact us today!
+      </p>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="contact-form">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" placeholder="Enter your first name">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" placeholder="Enter your last name">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" placeholder="Enter your email">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-control" placeholder="Enter your phone number">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" rows="4" placeholder="Tell us about your requirements"></textarea>
+          </div>
+          
+          <button class="btn btn-primary">
+            <i class="fas fa-paper-plane me-2"></i>
+            Send Message
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

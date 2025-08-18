@@ -1,0 +1,83 @@
+<div class="container py-5" style="max-width: 700px;">
+  <div class="card shadow-lg border-0 rounded-4 p-4 mb-4" style="background: linear-gradient(120deg, #f0f4f8 0%, #e0e7ef 100%);">
+    <div class="text-center mb-4">
+      <div class="mb-2">
+        <i class="fas fa-user-circle fa-4x text-primary"></i>
+      </div>
+      <h2 class="fw-bold mb-1" style="font-family: 'Inter', 'Cairo', sans-serif; letter-spacing: 1px;">Profile</h2>
+      <div class="mb-2" style="font-size: 1.1rem;">
+        <strong>Username:</strong> <span class="text-muted">{{ user?.username || user?.userName }}</span>
+      </div>
+      <div class="mb-2" *ngIf="user?.email"><strong>Email:</strong> <span class="text-muted">{{ user.email }}</span></div>
+      <div class="mb-2" *ngIf="user?.phoneNumber"><strong>Phone Number:</strong> <span class="text-muted">{{ user.phoneNumber }}</span></div>
+      <div class="mb-2" *ngIf="user?.role"><strong>Role:</strong> <span class="badge bg-info text-dark">{{ user.role }}</span></div>
+    </div>
+    <div class="d-flex gap-2 justify-content-center mb-3">
+      <button class="btn btn-primary px-4" (click)="toggleEdit()"><i class="fas fa-edit me-1"></i> Edit Profile</button>
+      <button class="btn btn-warning px-4" (click)="toggleChangePassword()"><i class="fas fa-key me-1"></i> Change Password</button>
+      <button *ngIf="user?.role === 'Owner' || (user?.roles && user.roles.includes('Owner'))" class="btn btn-primary btn-lg fw-bold me-2 d-flex align-items-center justify-content-center"
+         (click)="goToMyProperties()"
+         style="box-shadow: 0 4px 12px rgba(30,58,138,0.10); font-weight:600; font-size:1rem; border-radius:12px;">
+        <i class="fas fa-building me-2"></i>
+        Manage Properties
+      </button>
+      <!-- My Bookings button for renters only -->
+      <button *ngIf="user?.role === 'Renter' || (user?.roles && user.roles.includes('Renter'))" class="btn btn-success px-4 d-flex align-items-center" (click)="goToMyBookings()">
+        <i class="fas fa-calendar-check me-2"></i> My Bookings
+      </button>
+      <button class="btn btn-danger px-4" (click)="logout()"><i class="fas fa-sign-out-alt me-1"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- نموذج تعديل البروفايل -->
+  <div *ngIf="editMode" class="edit-card bg-white rounded-4 p-4 mb-4 border shadow-sm mx-auto" style="max-width: 500px;">
+    <h5 class="mb-3 text-center"><i class="fas fa-user-edit me-2 text-secondary"></i>Edit Profile</h5>
+    <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" formControlName="userName">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <input type="text" class="form-control" formControlName="phoneNumber">
+      </div>
+      <div class="d-flex gap-2 justify-content-center">
+        <button type="submit" class="btn btn-success px-4" [disabled]="editForm.invalid || isLoading">
+          <span *ngIf="!isLoading"><i class="fas fa-save me-1"></i> Save Changes</span>
+          <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin me-1"></i> Saving...</span>
+        </button>
+        <button type="button" class="btn btn-secondary px-4" (click)="toggleEdit()"><i class="fas fa-times me-1"></i> Cancel</button>
+      </div>
+    </form>
+    <div *ngIf="editSuccess" class="alert alert-success mt-3 text-center">Profile updated successfully!</div>
+    <div *ngIf="editError" class="alert alert-danger mt-3 text-center">{{ editError }}</div>
+  </div>
+
+  <!-- نموذج تغيير الباسورد -->
+  <div *ngIf="showChangePassword" class="edit-card bg-white rounded-4 p-4 border shadow-sm mb-4 mx-auto" style="max-width: 500px;">
+    <h5 class="mb-3 text-center"><i class="fas fa-key me-2 text-warning"></i>Change Password</h5>
+    <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePasswordSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Current Password</label>
+        <input type="password" class="form-control" formControlName="currentPassword">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">New Password</label>
+        <input type="password" class="form-control" formControlName="newPassword">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Confirm New Password</label>
+        <input type="password" class="form-control" formControlName="confirmNewPassword">
+      </div>
+      <div class="d-flex gap-2 justify-content-center">
+        <button type="submit" class="btn btn-warning px-4" [disabled]="changePasswordForm.invalid || isChangingPassword">
+          <span *ngIf="!isChangingPassword"><i class="fas fa-key me-1"></i> Change Password</span>
+          <span *ngIf="isChangingPassword"><i class="fas fa-spinner fa-spin me-1"></i> Changing...</span>
+        </button>
+        <button type="button" class="btn btn-secondary px-4" (click)="toggleChangePassword()"><i class="fas fa-times me-1"></i> Cancel</button>
+      </div>
+    </form>
+    <div *ngIf="changePasswordSuccess" class="alert alert-success mt-3 text-center">Password changed successfully!</div>
+    <div *ngIf="changePasswordError" class="alert alert-danger mt-3 text-center">{{ changePasswordError }}</div>
+  </div>
+</div> 

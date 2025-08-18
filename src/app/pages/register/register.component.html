@@ -1,0 +1,209 @@
+<div class="register-page">
+  <!-- Left Side - Register Form -->
+  <div class="register-form-section">
+    <div class="register-container">
+      <div class="register-header">
+        <div class="brand-logo">
+          <i class="fas fa-home me-2"></i>
+          Semsarak
+        </div>
+        <h2 class="welcome-title">Create Your Account</h2>
+        <p class="welcome-subtitle">Join our community and start your journey</p>
+      </div>
+      
+      <div class="register-body">
+        <!-- Enhanced Success Message -->
+        <div *ngIf="successMessage" class="notification-container">
+          <div class="success-notification animate__animated animate__fadeInDown">
+            <div class="notification-icon success-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-content">
+              <h4 class="notification-title">🎉 Account Created Successfully!</h4>
+              <p class="notification-message">{{ successMessage }}</p>
+              <div class="notification-progress">
+                <div class="progress-bar"></div>
+              </div>
+            </div>
+            <button class="notification-close" (click)="closeSuccessMessage()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Enhanced Error Message -->
+        <div *ngIf="errorMessage" class="notification-container">
+          <div class="error-notification animate__animated animate__fadeInDown">
+            <div class="notification-icon error-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="notification-content">
+              <h4 class="notification-title">⚠️ Registration Failed</h4>
+              <p class="notification-message">{{ errorMessage }}</p>
+              <div class="notification-actions">
+                <button class="btn-retry" (click)="retryRegistration()">
+                  <i class="fas fa-redo"></i> Try Again
+                </button>
+              </div>
+            </div>
+            <button class="notification-close" (click)="closeErrorMessage()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div *ngIf="isLoading" class="loading-overlay">
+          <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-text">
+              <h3>Creating Your Account...</h3>
+              <p>Please wait while we set up your profile</p>
+            </div>
+          </div>
+        </div>
+        
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Enter your username"
+                formControlName="username"
+                [class.is-invalid]="isFieldInvalid('username')"
+              >
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
+                Please enter your username
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                placeholder="Enter your email"
+                formControlName="email"
+                [class.is-invalid]="isFieldInvalid('email')"
+              >
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                Please enter a valid email address
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Create a password</label>
+              <div class="password-input-group">
+                <input 
+                  [type]="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  placeholder="6 characters or more"
+                  formControlName="password"
+                  [class.is-invalid]="isFieldInvalid('password')"
+                >
+                <button type="button" class="password-toggle" (click)="togglePassword()">
+                  <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+                Password must be at least 8 characters long
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">National ID</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Enter your national ID (14 digits)"
+                formControlName="nationalId"
+                [class.is-invalid]="isFieldInvalid('nationalId')"
+                maxlength="14"
+              >
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('nationalId')">
+                <span *ngIf="registerForm.get('nationalId')?.errors?.['required']">Please enter your national ID</span>
+                <span *ngIf="registerForm.get('nationalId')?.errors?.['pattern']">National ID must be exactly 14 digits</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input 
+                type="tel" 
+                class="form-control" 
+                formControlName="phoneNumber" 
+                placeholder="Enter your phone number"
+              >
+              <div *ngIf="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched" class="text-danger small">
+                Please enter a valid Egyptian mobile number
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Account Type</label>
+              <select class="form-control" formControlName="role" [class.is-invalid]="isFieldInvalid('role')">
+                <option value="" disabled selected>Select your account type</option>
+                <option value="Renter">Renter - I want to find properties</option>
+                <option value="Owner">Owner - I want to list my properties</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('role')">
+                Please select your account type
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100" [disabled]="registerForm.invalid || isLoading">
+            <span *ngIf="!isLoading">
+              <i class="fas fa-user-plus me-2"></i>
+              Create Account
+            </span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              Creating Account...
+            </span>
+          </button>
+        </form>
+        
+        <div class="login-link">
+          <p>Already have an account? <a routerLink="/login">Sign In</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side - Features Section -->
+  <div class="register-image-section">
+    <div class="image-overlay">
+      <h1 class="hero-title">Find Your Dream Home</h1>
+      <p class="hero-subtitle">Join thousands of satisfied customers who found their perfect property through Semsarak</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-search"></i></div>
+          <h4>Smart Search</h4>
+          <p>Find properties that match your exact criteria</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h4>Verified Properties</h4>
+          <p>All properties are verified and secure</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-headset"></i></div>
+          <h4>24/7 Support</h4>
+          <p>Our dedicated team is available round the clock</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-home"></i></div>
+          <h4>Premium Listings</h4>
+          <p>Access to the best properties in your area</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

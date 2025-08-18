@@ -1,0 +1,58 @@
+<div class="admin-property-details-container">
+  <div *ngIf="loading" class="admin-users-table-placeholder">
+    <i class="fas fa-spinner fa-spin me-2"></i> Loading property details...
+  </div>
+  <div *ngIf="error && !loading" class="custom-alert custom-alert-danger animate__animated animate__fadeInDown">
+    <span class="custom-alert-icon"><i class="fas fa-exclamation-circle"></i></span>
+    <span class="custom-alert-text">{{ error }}</span>
+    <span class="custom-alert-close" (click)="error = ''">&times;</span>
+  </div>
+  <div *ngIf="!loading && !error && property" class="admin-property-card">
+    <div class="admin-property-header">
+      <i class="fas fa-building fa-3x text-primary"></i>
+      <div class="admin-property-title">{{ property.title }}</div>
+      <div class="admin-property-status">
+        <span class="badge bg-info text-dark">{{ property.status }}</span>
+      </div>
+    </div>
+    <div class="admin-property-info-list">
+      <div><strong>City:</strong> <span>{{ property.city }}</span></div>
+      <div><strong>Region:</strong> <span>{{ property.region }}</span></div>
+      <div><strong>Price:</strong> <span>{{ property.price }}</span></div>
+      <div><strong>Description:</strong> <span>{{ property.description }}</span></div>
+      <div><strong>Rooms Count:</strong> <span>{{ property.roomsCount }}</span></div>
+      <div><strong>Gender Preference:</strong> <span>{{ property.genderPreference }}</span></div>
+      <div><strong>Street:</strong> <span>{{ property.street }}</span></div>
+      <div><strong>Owner:</strong> <span>{{ property.owner?.userName || property.owner?.username || property.owner?.UserName }}</span></div>
+      <div><strong>Property ID:</strong> <span>{{ property.id }}</span></div>
+      <!-- Add more fields as needed -->
+    </div>
+    <a routerLink="/admin" class="btn btn-outline-primary mt-3"><i class="fas fa-arrow-left me-1"></i> Back to Properties</a>
+    <button class="btn btn-danger mt-3 ms-2" (click)="openDeleteModal()" [disabled]="isDeleting">
+      <i class="fas fa-trash me-1"></i> Delete Property
+    </button>
+    <div *ngIf="deleteSuccess" class="custom-alert custom-alert-success animate__animated animate__fadeInDown mt-3">
+      <span class="custom-alert-icon"><i class="fas fa-check-circle"></i></span>
+      <span class="custom-alert-text">{{ deleteSuccess }}</span>
+      <span class="custom-alert-close" (click)="deleteSuccess = ''">&times;</span>
+    </div>
+    <div *ngIf="error && !loading" class="custom-alert custom-alert-danger animate__animated animate__fadeInDown mt-3">
+      <span class="custom-alert-icon"><i class="fas fa-exclamation-circle"></i></span>
+      <span class="custom-alert-text">{{ error }}</span>
+      <span class="custom-alert-close" (click)="error = ''">&times;</span>
+    </div>
+    <div *ngIf="showDeleteModal" class="modal-overlay">
+      <div class="custom-modal animate__animated animate__zoomIn">
+        <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="modal-title">Delete Property</div>
+        <div class="modal-message">Are you sure you want to delete this property? This action cannot be undone.</div>
+        <div class="modal-actions">
+          <button class="btn btn-danger" (click)="confirmDeleteProperty()" [disabled]="isDeleting">
+            <i class="fas fa-trash me-1"></i> Delete
+          </button>
+          <button class="btn btn-secondary ms-2" (click)="closeDeleteModal()" [disabled]="isDeleting">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

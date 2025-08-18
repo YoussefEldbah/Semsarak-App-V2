@@ -1,0 +1,85 @@
+.admin-user-details-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(30,41,59,0.13), 0 2px 8px rgba(30,41,59,0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+.admin-user-card {
+  text-align: center;
+}
+.admin-user-header {
+  margin-bottom: 1.5rem;
+}
+.admin-user-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-top: 0.5rem;
+}
+.admin-user-role {
+  margin-top: 0.5rem;
+}
+.admin-user-info-list {
+  text-align: left;
+  margin: 1.5rem auto 0 auto;
+  max-width: 400px;
+  font-size: 1.08rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.btn.btn-outline-primary {
+  margin-top: 1.5rem;
+  font-weight: 600;
+  border-radius: 0.7rem;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 41, 59, 0.55);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-modal {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 8px 32px rgba(30,41,59,0.18), 0 2px 8px rgba(30,41,59,0.10);
+  padding: 2.5rem 2.2rem 2rem 2.2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  text-align: center;
+  position: relative;
+  animation-duration: 0.25s;
+}
+.modal-icon {
+  font-size: 2.5rem;
+  color: #ff9800;
+  margin-bottom: 0.7rem;
+}
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+.modal-message {
+  font-size: 1.08rem;
+  color: #444;
+  margin-bottom: 1.3rem;
+}
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+@media (max-width: 500px) {
+  .custom-modal {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+} 

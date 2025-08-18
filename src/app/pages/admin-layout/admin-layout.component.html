@@ -1,0 +1,35 @@
+<div class="admin-layout d-flex">
+  <nav class="sidebar bg-dark text-white p-3">
+    <div class="sidebar-header mb-4">
+      <h3 class="fw-bold">Semsarak Admin</h3>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+      </li>
+     
+
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/admin/profile" routerLinkActive="active">
+          <i class="bi bi-person"></i> Profile
+        </a>
+      </li>
+      <li class="nav-item mt-4">
+        <button class="btn btn-danger w-100" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </li>
+    </ul>
+  </nav>
+  <div class="content  flex-grow-1">
+    <div class="topbar bg-light p-3 border-bottom d-flex align-items-center justify-content-between">
+      <span class="fw-bold fs-5">Admin Dashboard</span>
+      <span class="text-muted">Welcome, Admin</span>
+    </div>
+    <div class="p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div> 

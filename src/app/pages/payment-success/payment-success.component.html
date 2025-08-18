@@ -1,0 +1,16 @@
+<div class="container py-5 text-center">
+  <h2 class="mb-4" style="color: #1e3a8a;"><i class="fas fa-credit-card me-2"></i>Payment Confirmation</h2>
+  <div *ngIf="confirmLoading" class="my-4">
+    <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+    <div class="mt-2">Confirming your payment...</div>
+  </div>
+  <div *ngIf="confirmSuccess" class="alert alert-success animate__animated animate__fadeInDown">
+    <i class="fas fa-check-circle me-1"></i> Payment confirmed successfully! Redirecting...
+  </div>
+  <div *ngIf="confirmError" class="alert alert-danger animate__animated animate__fadeInDown">
+    <i class="fas fa-exclamation-circle me-1"></i> {{ confirmError }}
+  </div>
+  <div *ngIf="!confirmLoading && !confirmSuccess && !confirmError">
+    <div class="alert alert-info">Waiting for payment confirmation...</div>
+  </div>
+</div> 

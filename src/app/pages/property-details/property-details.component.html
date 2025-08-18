@@ -1,0 +1,93 @@
+<div class="property-details-container" *ngIf="!loading && property; else loadingOrError">
+  <!-- Booking Success Toast -->
+  <div *ngIf="bookingSuccess" class="booking-toast animate__animated animate__fadeInDown">
+    <i class="fas fa-check-circle me-2"></i> {{ bookingSuccess }}
+    <button type="button" class="btn-close btn-close-white ms-2" (click)="bookingSuccess = ''"></button>
+  </div>
+  <div class="property-details-card">
+    <div class="property-images">
+      <ng-container *ngIf="images.length > 0; else noImages">
+        <div class="slider-wrapper">
+          <button *ngIf="images.length > 1" class="slider-arrow left" (click)="prevImage()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <img [src]="images[currentImageIndex]" alt="Property Image" class="slider-image single-image" [class.single-image]="images.length === 1" />
+          <button *ngIf="images.length > 1" class="slider-arrow right" (click)="nextImage()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="slider-dots" *ngIf="images.length > 1">
+          <span *ngFor="let img of images; let i = index" class="dot" [class.active]="i === currentImageIndex" (click)="goToImage(i)"></span>
+        </div>
+      </ng-container>
+      <ng-template #noImages>
+        <div class="no-images">No images available</div>
+      </ng-template>
+    </div>
+    <div class="property-info">
+      <h2 class="property-title">{{ property?.title }}</h2>
+      <div class="property-location">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>{{ property?.city }}, {{ property?.region }}</span>
+      </div>
+      <div class="property-price">${{ property?.price }}</div>
+      <div class="property-features">
+        <span>
+          <i class="fas fa-bed"></i> {{ property?.roomsCount || '-' }} Rooms
+        </span>
+        <span>
+          <i class="fas fa-user"></i> {{ property?.genderPreference || '-' }}
+        </span>
+      </div>
+      <div class="property-description">
+        <h4>Description</h4>
+        <p>{{ property?.description || 'No description provided.' }}</p>
+      </div>
+      <div class="property-address">
+        <h4>Address</h4>
+        <p>{{ property?.street || '-' }}, {{ property?.city || '-' }}, {{ property?.region || '-' }}</p>
+      </div>
+      <!-- Book Now button for renters only -->
+      <div *ngIf="isRenter" class="mt-3 d-flex justify-content-center">
+        <button class="btn btn-primary btn-lg fw-bold" (click)="openBookingModal()">
+          <i class="fas fa-calendar-plus me-2"></i> Book Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #loadingOrError>
+  <div *ngIf="loading" class="loading">Loading property details...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</ng-template>
+
+<!-- Booking Modal -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{ display: showBookingModal ? 'block' : 'none', background: 'rgba(0,0,0,0.35)' }" *ngIf="showBookingModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3 animate__animated animate__fadeInDown">
+      <div class="modal-header border-0">
+        <h5 class="modal-title"><i class="fas fa-calendar-plus me-2 text-primary"></i> Book Property</h5>
+        <button type="button" class="btn-close" (click)="closeBookingModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="startDate" class="form-label">Start Date</label>
+          <input id="startDate" type="date" class="form-control" [(ngModel)]="bookingStartDate" [disabled]="bookingLoading">
+        </div>
+        <div class="mb-3">
+          <label for="endDate" class="form-label">End Date</label>
+          <input id="endDate" type="date" class="form-control" [(ngModel)]="bookingEndDate" [disabled]="bookingLoading">
+        </div>
+        <div *ngIf="bookingError" class="alert alert-danger animate__animated animate__fadeInDown">{{ bookingError }}</div>
+        <div *ngIf="bookingSuccess" class="alert alert-success animate__animated animate__fadeInDown">{{ bookingSuccess }}</div>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-secondary" (click)="closeBookingModal()" [disabled]="bookingLoading">Cancel</button>
+        <button class="btn btn-primary" (click)="submitBooking()" [disabled]="bookingLoading">
+          <span *ngIf="!bookingLoading"><i class="fas fa-check me-1"></i> Confirm Booking</span>
+          <span *ngIf="bookingLoading"><i class="fas fa-spinner fa-spin me-1"></i> Booking...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

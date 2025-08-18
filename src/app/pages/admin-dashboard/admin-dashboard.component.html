@@ -1,0 +1,342 @@
+<!-- Modern Admin Dashboard -->
+<div class="admin-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1 class="dashboard-title">
+            <i class="fas fa-tachometer-alt me-3"></i>
+            لوحة تحكم الأدمن
+          </h1>
+          <p class="dashboard-subtitle">مرحباً بك في منصة سمسارك - إدارة شاملة للمنصة</p>
+        </div>
+        <div class="col-md-6 text-end">
+          <div class="dashboard-date">
+            <i class="fas fa-calendar-alt me-2"></i>
+            {{ currentDate | date:'EEEE, MMMM d, y' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-card-body">
+            <div class="stat-card-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-card-content">
+              <h3 class="stat-card-number">{{ formatNumber(stats.totalRenters) }}</h3>
+              <p class="stat-card-label">إجمالي المستأجرين</p>
+              <div class="stat-card-change positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>نشطون في المنصة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-card-body">
+            <div class="stat-card-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <div class="stat-card-content">
+              <h3 class="stat-card-number">{{ formatNumber(stats.totalOwners) }}</h3>
+              <p class="stat-card-label">إجمالي الملاك</p>
+              <div class="stat-card-change positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>مسجلون في المنصة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-card-body">
+            <div class="stat-card-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <div class="stat-card-content">
+              <h3 class="stat-card-number">{{ formatCurrency(stats.totalProfitFromBookings) }}</h3>
+              <p class="stat-card-label">أرباح الحجوزات</p>
+              <div class="stat-card-change positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>إجمالي الأرباح</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-card-body">
+            <div class="stat-card-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-card-content">
+              <h3 class="stat-card-number">{{ formatCurrency(stats.totalProfitOverall) }}</h3>
+              <p class="stat-card-label">إجمالي الأرباح</p>
+              <div class="stat-card-change positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>من جميع المصادر</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Revenue Cards -->
+    <div class="row">
+      <div class="col-xl-6 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-card-body">
+            <div class="stat-card-icon">
+              <i class="fas fa-ad"></i>
+            </div>
+            <div class="stat-card-content">
+              <h3 class="stat-card-number">{{ formatCurrency(stats.totalProfitFromAdvertisements) }}</h3>
+              <p class="stat-card-label">أرباح الإعلانات</p>
+              <div class="stat-card-change positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>من الإعلانات المدفوعة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-6 col-md-6 mb-4">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-card-body">
+            <div class="stat-card-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-card-content">
+              <h3 class="stat-card-number">{{ formatNumber(stats.totalRenters + stats.totalOwners) }}</h3>
+              <p class="stat-card-label">إجمالي المستخدمين</p>
+              <div class="stat-card-change positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>مستأجرين + ملاك</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="row">
+      <div class="col-12 mb-4">
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <h5 class="dashboard-card-title">
+              <i class="fas fa-clock me-2"></i>
+              النشاطات الحديثة
+            </h5>
+          </div>
+          <div class="dashboard-card-body">
+            <div class="activity-grid">
+              <div class="activity-item" *ngFor="let activity of recentActivities">
+                <div class="activity-icon" [ngClass]="activity.type">
+                  <i [class]="activity.icon"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-text">{{ activity.message }}</p>
+                  <span class="activity-time">{{ activity.time | date:'short' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Tables Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'users'" (click)="onTabChange('users')">
+                  <i class="fas fa-users me-2"></i>
+                  المستخدمين
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'properties'" (click)="onTabChange('properties')">
+                  <i class="fas fa-building me-2"></i>
+                  العقارات
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'bookings'" (click)="onTabChange('bookings')">
+                  <i class="fas fa-calendar-check me-2"></i>
+                  الحجوزات
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="dashboard-card-body">
+            <!-- Users Tab -->
+            <div [hidden]="activeTab !== 'users'">
+              <div *ngIf="loading" class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">جاري التحميل...</span>
+                </div>
+                <p class="mt-2">جاري تحميل المستخدمين...</p>
+              </div>
+              <div *ngIf="error && !loading" class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ error }}
+              </div>
+              <div *ngIf="!loading && !error">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>#</th>
+                        <th>اسم المستخدم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>الدور</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let user of users; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>
+                          <div class="user-info">
+                            <div class="user-avatar">
+                              <i class="fas fa-user"></i>
+                            </div>
+                            <span>{{ user.userName || user.username }}</span>
+                          </div>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                          <span *ngIf="user.roles && user.roles.length; else singleRole">
+                            <span *ngFor="let role of user.roles; let last = last">
+                              <span class="badge" [ngClass]="role === 'Renter' ? 'bg-primary' : 'bg-success'">{{ role === 'Renter' ? 'مستأجر' : 'مالك' }}</span><span *ngIf="!last"> </span>
+                            </span>
+                          </span>
+                          <ng-template #singleRole>
+                            <span class="badge" [ngClass]="user.role === 'Renter' ? 'bg-primary' : 'bg-success'">{{ user.role === 'Renter' ? 'مستأجر' : 'مالك' }}</span>
+                          </ng-template>
+                        </td>
+                        <td>{{ user.createdAt | date:'short' }}</td>
+                        <td>
+                          <span class="badge bg-success">نشط</span>
+                        </td>
+                        <td>
+                          <div class="btn-group" role="group">
+                            <a [routerLink]="['/admin/users', user.id]" class="btn btn-sm btn-outline-primary">
+                              <i class="fas fa-eye"></i>
+                            </a>
+                         
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="users.length === 0" class="text-center py-4">
+                  <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">لا يوجد مستخدمين.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Properties Tab -->
+            <div [hidden]="activeTab !== 'properties'">
+              <div *ngIf="propertiesLoading" class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">جاري التحميل...</span>
+                </div>
+                <p class="mt-2">جاري تحميل العقارات...</p>
+              </div>
+              <div *ngIf="propertiesError && !propertiesLoading" class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ propertiesError }}
+              </div>
+              <div *ngIf="!propertiesLoading && !propertiesError">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>#</th>
+                        <th>العنوان</th>
+                        <th>المدينة</th>
+                        <th>المنطقة</th>
+                        <th>السعر</th>
+                        <th>الحالة</th>
+                        <th>المالك</th>
+                        <th>الإجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let property of properties; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>
+                          <div class="property-info">
+                            
+                            <span>{{ property.title }}</span>
+                          </div>
+                        </td>
+                        <td>{{ property.city }}</td>
+                        <td>{{ property.region }}</td>
+                        <td>
+                          <span class="price-badge">{{ formatCurrency(property.price) }}</span>
+                        </td>
+                        <td>
+                          <span class="badge" [ngClass]="getStatusBadgeClass(property.status)">
+                            {{ property.status }}
+                          </span>
+                        </td>
+                        <td>{{ property.owner?.userName || property.owner?.username }}</td>
+                        <td>
+                          <div class="btn-group" role="group">
+                            <a [routerLink]="['/admin/properties', property.id]" class="btn btn-sm btn-outline-primary">
+                              <i class="fas fa-eye"></i>
+                            </a>
+                         
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="properties.length === 0" class="text-center py-4">
+                  <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">لا يوجد عقارات.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div [hidden]="activeTab !== 'bookings'">
+              <div class="text-center py-4">
+                <i class="fas fa-calendar-check fa-3x text-muted mb-3"></i>
+                <p class="text-muted">قسم الحجوزات قيد التطوير...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
