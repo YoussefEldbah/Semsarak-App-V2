@@ -50,25 +50,25 @@ export class AdminDashboardComponent implements OnInit {
       type: 'user',
       icon: 'fas fa-user-plus',
       message: 'مستخدم جديد انضم للمنصة',
-      time: new Date(Date.now() - 1000 * 60 * 30) // 30 minutes ago
+      time: new Date(Date.now() - 1000 * 60 * 30)
     },
     {
       type: 'property',
       icon: 'fas fa-building',
       message: 'عقار جديد تم إضافته',
-      time: new Date(Date.now() - 1000 * 60 * 60) // 1 hour ago
+      time: new Date(Date.now() - 1000 * 60 * 60)
     },
     {
       type: 'booking',
       icon: 'fas fa-calendar-check',
       message: 'حجز جديد تم إنشاؤه',
-      time: new Date(Date.now() - 1000 * 60 * 90) // 1.5 hours ago
+      time: new Date(Date.now() - 1000 * 60 * 90)
     },
     {
       type: 'revenue',
       icon: 'fas fa-dollar-sign',
       message: 'دفعة جديدة تمت معالجتها',
-      time: new Date(Date.now() - 1000 * 60 * 120) // 2 hours ago
+      time: new Date(Date.now() - 1000 * 60 * 120)
     }
   ];
 
@@ -110,7 +110,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   calculateStatsFromData() {
-    // Calculate stats from available data as fallback
     const renters = this.users.filter(user => 
       user.role === 'Renter' || (user.roles && user.roles.includes('Renter'))
     ).length;
@@ -127,7 +126,6 @@ export class AdminDashboardComponent implements OnInit {
     };
   }
 
-  // Helper method to format currency
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
@@ -137,7 +135,6 @@ export class AdminDashboardComponent implements OnInit {
     }).format(amount);
   }
 
-  // Helper method to format numbers
   formatNumber(num: number): string {
     return new Intl.NumberFormat('ar-EG').format(num);
   }
@@ -219,15 +216,60 @@ export class AdminDashboardComponent implements OnInit {
       });
   }
 
-  getPropertyImage(property: any): string {
-    if (property.imagePaths && property.imagePaths.length > 0) {
-      return property.imagePaths[0];
-    }
-    return 'https://via.placeholder.com/50x50?text=عقار';
+  // إبقاء الحذف فقط
+  deletingPropertyId: number | null = null;
+  deleteError: string = '';
+  showDeleteModal: boolean = false;
+  pendingDeleteProperty: any = null;
+  isDeleting: boolean = false;
+
+  openDeleteModal(property: any) {
+    this.pendingDeleteProperty = property;
+    this.deleteError = '';
+    this.showDeleteModal = true;
   }
 
+  closeDeleteModal() {
+    if (this.isDeleting) return;
+    this.showDeleteModal = false;
+    this.pendingDeleteProperty = null;
+    this.deleteError = '';
+  }
+
+  async confirmDelete() {
+    if (!this.pendingDeleteProperty) return;
+    await this.deleteProperty(this.pendingDeleteProperty.id);
+  }
+
+  async deleteProperty(propertyId: number) {
+    this.deletingPropertyId = propertyId;
+    this.isDeleting = true;
+    this.deleteError = '';
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`https://localhost:7152/api/Admin/property/${propertyId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      if (!res.ok) throw new Error('فشل في حذف العقار');
+      this.properties = this.properties.filter(p => p.id !== propertyId);
+      this.showDeleteModal = false;
+      this.pendingDeleteProperty = null;
+    } catch (err: any) {
+      this.deleteError = err.message || 'فشل في حذف العقار';
+    } finally {
+      this.deletingPropertyId = null;
+      this.isDeleting = false;
+    }
+  }
+
+  // دالة مساعدة لعرض لون حالة العقار في الجدول
   getStatusBadgeClass(status: string): string {
-    switch (status?.toLowerCase()) {
+    switch ((status || '').toLowerCase()) {
       case 'available':
       case 'متاح':
         return 'bg-success';

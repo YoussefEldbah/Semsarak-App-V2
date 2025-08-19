@@ -19,6 +19,108 @@
 <body>
   <app-root></app-root>
   
+  <!-- N8N Chatbot Widget -->
+  <script src="https://cdn.n8nchatui.com/v1/embed.js"></script>
+  <script>
+    function initN8NChatbot() {
+      if (window.Chatbot && typeof window.Chatbot.init === 'function') {
+        window.Chatbot.init({
+          "n8nChatUrl": "https://abdullahmashaly90.app.n8n.cloud/webhook/b047d689-3bb2-42b4-bf96-ac8ad652a9b9/chat",
+          "metadata": {},
+          "theme": {
+            "button": {
+              "backgroundColor": "#4f86de",
+              "right": 20,
+              "bottom": 20,
+              "size": 50,
+              "iconColor": "#373434",
+              "customIconSrc": "https://www.svgrepo.com/show/339963/chat-bot.svg",
+              "customIconSize": 60,
+              "customIconBorderRadius": 15,
+              "autoWindowOpen": {
+                "autoOpen": false,
+                "openDelay": 2
+              },
+              "borderRadius": "rounded"
+            },
+            "tooltip": {
+              "showTooltip": false,
+              "tooltipMessage": "Hello 👋 customize & connect me to n8n",
+              "tooltipBackgroundColor": "#fff9f6",
+              "tooltipTextColor": "#1c1c1c",
+              "tooltipFontSize": 15
+            },
+            "chatWindow": {
+              "borderRadiusStyle": "rounded",
+              "avatarBorderRadius": 25,
+              "messageBorderRadius": 6,
+              "showTitle": true,
+              "title": "N8N Chat UI Bot",
+              "titleAvatarSrc": "https://www.svgrepo.com/show/339963/chat-bot.svg",
+              "avatarSize": 40,
+              "welcomeMessage": "Hello! This is the default welcome message",
+              "errorMessage": "Please connect me to n8n first",
+              "backgroundColor": "#ffffff",
+              "height": 600,
+              "width": 400,
+              "fontSize": 16,
+              "starterPrompts": [
+                "Who are you?",
+                "What do you do?"
+              ],
+              "starterPromptFontSize": 15,
+              "renderHTML": false,
+              "clearChatOnReload": false,
+              "showScrollbar": false,
+              "botMessage": {
+                "backgroundColor": "#4f86de",
+                "textColor": "#fafafa",
+                "showAvatar": true,
+                "avatarSrc": "https://www.svgrepo.com/show/334455/bot.svg"
+              },
+              "userMessage": {
+                "backgroundColor": "#fff6f3",
+                "textColor": "#050505",
+                "showAvatar": true,
+                "avatarSrc": "https://www.svgrepo.com/show/532363/user-alt-1.svg"
+              },
+              "textInput": {
+                "placeholder": "Type your query",
+                "backgroundColor": "#ffffff",
+                "textColor": "#1e1e1f",
+                "sendButtonColor": "#4f86de",
+                "maxChars": 50,
+                "maxCharsWarningMessage": "You exceeded the characters limit. Please input less than 50 characters.",
+                "autoFocus": false,
+                "borderRadius": 6,
+                "sendButtonBorderRadius": 50
+              },
+              "uploadsConfig": {
+                "enabled": true,
+                "acceptFileTypes": [
+                  "jpeg",
+                  "jpg",
+                  "png",
+                  "pdf"
+                ],
+                "maxFiles": 5,
+                "maxSizeInMB": 10
+              },
+              "voiceInputConfig": {
+                "enabled": true,
+                "maxRecordingTime": 15,
+                "recordingNotSupportedMessage": "To record audio, use modern browsers like Chrome or Firefox that support audio recording"
+              }
+            }
+          }
+        });
+      } else {
+        setTimeout(initN8NChatbot, 500);
+      }
+    }
+    initN8NChatbot();
+  </script>
+  
   <!-- Bootstrap JavaScript Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

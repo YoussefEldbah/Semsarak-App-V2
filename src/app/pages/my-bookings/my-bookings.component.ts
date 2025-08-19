@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 
 interface Booking {
   id: number;
@@ -34,6 +35,8 @@ export class MyBookingsComponent implements OnInit {
   payingId: number | null = null;
   paymentError: string = '';
   paymentSuccess: string = '';
+
+  private stripe: Stripe | null = null;
 
   ngOnInit() {
     // Check if user is renter
@@ -105,7 +108,6 @@ export class MyBookingsComponent implements OnInit {
         this.cancellingId = null;
         return;
       }
-      // Update status locally
       booking.status = 'Cancelled';
       this.cancelSuccess = 'Booking cancelled successfully!';
       setTimeout(() => { this.cancelSuccess = ''; }, 4000);
@@ -131,14 +133,13 @@ export class MyBookingsComponent implements OnInit {
     return `https://localhost:7152${path}`;
   }
 
-  // ✅ NEW: Payment method for booking confirmation
   async payForBooking(booking: Booking) {
     if (!booking || !booking.id) return;
-    
+
     this.payingId = booking.id;
     this.paymentError = '';
     this.paymentSuccess = '';
-    
+
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       const res = await fetch(`https://localhost:7152/api/booking/${booking.id}/pay`, {
@@ -148,18 +149,45 @@ export class MyBookingsComponent implements OnInit {
           ...(token ? { 'Authorization': 'Bearer ' + token } : {})
         }
       });
-      
+
       const data = await res.json();
       console.log('Pay for Booking API response:', data);
-      
+
       if (!res.ok) {
         this.paymentError = data?.message || 'Failed to initiate payment';
         return;
       }
-      
-      // Redirect to Stripe payment modal
-      this.openPaymentModal(data);
-      
+
+      // Create checkout session
+      const checkoutRes = await fetch('https://localhost:7152/api/payment/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+        },
+        body: JSON.stringify({
+          paymentId: data.paymentId,
+          title: `Booking Payment: ${booking.propertyTitle}`,
+          returnUrl: window.location.origin + '/my-bookings'
+        })
+      });
+
+      const checkoutData = await checkoutRes.json();
+      if (!checkoutRes.ok) {
+        this.paymentError = checkoutData?.error || 'Failed to create checkout session';
+        return;
+      }
+
+      // Load Stripe and redirect to checkout
+      this.stripe = await loadStripe(data.publishableKey);
+      if (!this.stripe) {
+        this.paymentError = 'Failed to load Stripe';
+        return;
+      }
+
+      // Redirect to Stripe Checkout using sessionUrl
+      window.location.href = checkoutData.sessionUrl;
+
     } catch (err: any) {
       this.paymentError = err.message || 'Failed to initiate payment';
     } finally {
@@ -167,20 +195,25 @@ export class MyBookingsComponent implements OnInit {
     }
   }
 
-  private openPaymentModal(paymentData: any) {
-    // TODO: Open Stripe payment modal
-    console.log('Payment data:', paymentData);
-    this.paymentSuccess = 'Payment initiated successfully! Redirecting to payment...';
-    
-    // For now, just show success message
-    setTimeout(() => {
-      this.paymentSuccess = '';
-      this.fetchBookings(); // Refresh bookings
-    }, 3000);
-  }
-
   canPay(booking: Booking): boolean {
     if (!booking || !this.isRenter) return false;
     return booking.status === 'Pending';
   }
-} 
+
+
+
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'Pending':
+        return 'Pending Payment';
+      case 'Approved':
+        return 'Confirmed';
+      case 'Cancelled':
+        return 'Cancelled';
+      case 'Rejected':
+        return 'Rejected';
+      default:
+        return status;
+    }
+  }
+}
